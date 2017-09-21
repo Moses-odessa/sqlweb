@@ -42,9 +42,9 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = getAction(req);
         MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
-        req.setAttribute("menu", MainMenu.getMenu());
 
-        service.doPost(req, currentMenuItem);
+        currentMenuItem = service.doPost(req, currentMenuItem);
+        service.setAttributes(req, currentMenuItem);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }

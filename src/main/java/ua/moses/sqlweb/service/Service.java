@@ -2,12 +2,11 @@ package ua.moses.sqlweb.service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
-import java.util.Map;
 
 public interface Service {
     Connection connect(String databaseName, String userName, String password);
 
     void setAttributes(HttpServletRequest req, MenuItem currentMenuItem);
 
-    void doPost(HttpServletRequest req, MenuItem currentMenuItem);
+    MenuItem doPost(HttpServletRequest req, MenuItem currentMenuItem);
 }

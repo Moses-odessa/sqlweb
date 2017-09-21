@@ -46,7 +46,7 @@ public class ServiceImpl implements Service {
 
 
     @Override
-    public void doPost(HttpServletRequest req, MenuItem currentMenuItem) {
+    public MenuItem doPost(HttpServletRequest req, MenuItem currentMenuItem) {
         try {
             switch (currentMenuItem.getMenuEnum()) {
                 case CONNECT:
@@ -57,12 +57,12 @@ public class ServiceImpl implements Service {
                     break;
 
             }
-            setAttributes(req, currentMenuItem);
         } catch (RuntimeException e) {
-            req.setAttribute("current_page", MainMenu.ERROR.getMenuItem());
             req.setAttribute("error_text", e.getMessage());
+            return MainMenu.ERROR.getMenuItem();
         }
 
+        return currentMenuItem;
     }
 
 
