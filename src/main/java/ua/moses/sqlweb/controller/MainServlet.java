@@ -29,12 +29,11 @@ public class MainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = getAction(req);
         MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
-        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
         if (currentMenuItem == null) {
             currentMenuItem = MainMenu.HELP.getMenuItem();
         }
 
-        service.setAttributes(connection, req, currentMenuItem);
+        service.setAttributes(req, currentMenuItem);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
@@ -43,10 +42,9 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = getAction(req);
         MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
-        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
         req.setAttribute("menu", MainMenu.getMenu());
 
-        service.doPost(connection, req, currentMenuItem);
+        service.doPost(req, currentMenuItem);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }

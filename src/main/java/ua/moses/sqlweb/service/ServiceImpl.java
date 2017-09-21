@@ -5,6 +5,7 @@ import ua.moses.sqlweb.model.PostgresManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ServiceImpl implements Service {
 
@@ -15,28 +16,37 @@ public class ServiceImpl implements Service {
 
 
     @Override
-    public void setAttributes(Connection connection, HttpServletRequest req, MenuItem currentMenuItem) {
+    public void setAttributes(HttpServletRequest req, MenuItem currentMenuItem) {
         req.setAttribute("menu", MainMenu.getMenu());
         req.setAttribute("current_page", currentMenuItem);
+        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
+        req.setAttribute("connected", connection != null);
+
         try {
             DataBaseManager db = new PostgresManager();
             switch (currentMenuItem.getMenuEnum()) {
                 case GET_TABLES:
                     req.setAttribute("tables", db.getTables(connection));
                     break;
+                case CONNECT:
+                    if (connection != null) {
+                        req.setAttribute("connected_user", connection.getMetaData().getUserName());
+                        req.setAttribute("connected_base", connection.getCatalog());
+                    }
+
+                    break;
 
             }
-        } catch (RuntimeException e) {
+        } catch (SQLException | RuntimeException e) {
             req.setAttribute("current_page", MainMenu.ERROR.getMenuItem());
             req.setAttribute("menu", MainMenu.getMenu());
             req.setAttribute("error_text", e.getMessage());
         }
     }
 
+
     @Override
-    public void doPost(Connection connection, HttpServletRequest req, MenuItem currentMenuItem) {
-        req.setAttribute("menu", MainMenu.getMenu());
-        req.setAttribute("current_page", currentMenuItem);
+    public void doPost(HttpServletRequest req, MenuItem currentMenuItem) {
         try {
             switch (currentMenuItem.getMenuEnum()) {
                 case CONNECT:
@@ -44,10 +54,10 @@ public class ServiceImpl implements Service {
                     String userName = req.getParameter("username");
                     String password = req.getParameter("password");
                     req.getSession().setAttribute("db_connection", connect(databaseName, userName, password));
-                    req.setAttribute("current_page", MainMenu.CONNECT.getMenuItem());
                     break;
 
             }
+            setAttributes(req, currentMenuItem);
         } catch (RuntimeException e) {
             req.setAttribute("current_page", MainMenu.ERROR.getMenuItem());
             req.setAttribute("error_text", e.getMessage());

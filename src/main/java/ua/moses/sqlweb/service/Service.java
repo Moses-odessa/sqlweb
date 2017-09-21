@@ -7,7 +7,7 @@ import java.util.Map;
 public interface Service {
     Connection connect(String databaseName, String userName, String password);
 
-    void setAttributes(Connection connection, HttpServletRequest req, MenuItem currentMenuItem);
+    void setAttributes(HttpServletRequest req, MenuItem currentMenuItem);
 
-    void doPost(Connection connection, HttpServletRequest req, MenuItem currentMenuItem);
+    void doPost(HttpServletRequest req, MenuItem currentMenuItem);
 }
