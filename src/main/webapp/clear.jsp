@@ -1,0 +1,1 @@
+<p>Clear table data</p>
