@@ -6,6 +6,7 @@ import ua.moses.sqlweb.service.Service;
 import ua.moses.sqlweb.service.ServiceImpl;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,12 +29,24 @@ public class MainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = getAction(req);
         MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
-        if (currentMenuItem != null) {
-            req.setAttribute("current_page", currentMenuItem);
-        } else {
-            req.setAttribute("current_page", MainMenu.HELP.getMenuItem());
+        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
+        if (currentMenuItem == null) {
+            currentMenuItem = MainMenu.HELP.getMenuItem();
         }
-        service.setAttributes(req, currentMenuItem);
+
+        service.setAttributes(connection, req, currentMenuItem);
+        req.getRequestDispatcher("main.jsp").forward(req, resp);
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = getAction(req);
+        MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
+        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
+        req.setAttribute("menu", MainMenu.getMenu());
+
+        service.doPost(connection, req, currentMenuItem);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
@@ -41,27 +54,6 @@ public class MainServlet extends HttpServlet {
     private String getAction(HttpServletRequest req) {
         String requestURI = req.getRequestURI();
         return requestURI.substring(req.getContextPath().length() + 1, requestURI.length());
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = getAction(req);
-
-        if (action.equals("connect")) {
-            String databaseName = req.getParameter("dbname");
-            String userName = req.getParameter("username");
-            String password = req.getParameter("password");
-
-            try {
-                service.connect(databaseName, userName, password);
-                resp.sendRedirect(resp.encodeRedirectURL("menu"));
-            } catch (Exception e) {
-                req.setAttribute("current_page", MainMenu.ERROR.getMenuItem());
-                req.setAttribute("menu", MainMenu.getMenu());
-                req.setAttribute("error_text", e.getMessage());
-                req.getRequestDispatcher("main.jsp").forward(req, resp);
-            }
-        }
     }
 
 }

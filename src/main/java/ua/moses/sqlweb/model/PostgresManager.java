@@ -34,9 +34,11 @@ public class PostgresManager implements DataBaseManager {
     }
 
 
-    public Set<String> getTables(Connection connection) throws RuntimeException {
+    public List<String> getTables(Connection connection) throws RuntimeException {
+        if (connection == null) throw new RuntimeException("Data Base not connected!!!! Please connect first!!!");
+
         String sql = "SELECT tablename FROM pg_catalog.pg_tables where schemaname = 'public'";
-        Set<String> result = new LinkedHashSet<>();
+        List<String> result = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {

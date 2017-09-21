@@ -1,13 +1,13 @@
 package ua.moses.sqlweb.service;
 
-import ua.moses.sqlweb.model.DataBaseManager;
-
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
 import java.util.Map;
 
 public interface Service {
-    DataBaseManager connect(String databaseName, String userName, String password);
-    Map<String, Object> getAttributes(MenuItem menuItem);
+    Connection connect(String databaseName, String userName, String password);
 
-    void setAttributes(HttpServletRequest req, MenuItem currentMenuItem);
+    void setAttributes(Connection connection, HttpServletRequest req, MenuItem currentMenuItem);
+
+    void doPost(Connection connection, HttpServletRequest req, MenuItem currentMenuItem);
 }
