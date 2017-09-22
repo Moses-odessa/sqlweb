@@ -3,26 +3,61 @@
 <p align = "center"><h3>${table_name}</h3></p>
 <table border = "1">
 <tr bgcolor = "gray">
+    <td>#</td>
     <c:forEach items="${table_columns}" var="column">
         <td align = "center">
             <b>${column}</b><br>
             <a href="${command_del_column.link}?table_name=${table_name}&column_name=${column}">${command_del_column.title}</a>
         </td>
     </c:forEach>
+    <td></td>
 </tr>
-<c:forEach items="${table_data}" var="row">
+
+<c:forEach items="${table_data}" var="row" varStatus="rowNumber">
 <tr>
-    <c:forEach items="${row}" var="item">
-    <td align = "center"> ${item}</td>
+    <td  align = "center">
+        ${rowNumber.index + 1}
+        <form id="del_form_${rowNumber.index}" action="${command_del_record.link}" method="post">
+            <input form="del_form_${rowNumber.index}" type="hidden" value="${table_name}" name="table_name">
+        </form>
+    </td>
+
+    <c:forEach items="${row}" var="item" varStatus="status">
+        <td align = "center">
+            <input form="del_form_${rowNumber.index}" type="hidden" value="${table_columns[status.index]}" name="columns[]">
+            <input form="del_form_${rowNumber.index}" type="hidden" value="${item}" name="values[]">
+            ${item}
+        </td>
     </c:forEach>
+    <td>
+        <input form="del_form_${rowNumber.index}" type="submit" value="${command_del_record.title}"/>
+    </td>
 </tr>
 </c:forEach>
+
+<tr>
+    <td>
+        <form id="ins_form" action="${command_insert.link}" method="post">
+            <input form="ins_form" type="hidden" value="${table_name}" name="table_name">
+        </form>
+    </td>
+
+    <c:forEach items="${table_columns}" var="column">
+        <td align = "center">
+            <input form="ins_form" type="hidden" value="${column}" name="insert_columns[]">
+            <input form="ins_form" type="text" value="" name="insert_values[]">
+        </td>
+    </c:forEach>
+    <td><input form="ins_form" type="submit" value="${command_insert.title}"/></td>
+</tr>
+
 </table>
-<p align = "center">
-<form action="${command_add_column.link}" method="post">
-    ${command_add_column.title}:
-    <input type="hidden" name="table_name" value="${table_name}"/>
-    <input type="text" name="column_name"/>
-    <input type="submit" value="OK"/>
+
+<form id="add_form" action="${command_add_column.link}" method="post">
+    <p align = "center">
+        ${command_add_column.title}:
+        <input form="add_form" type="hidden" name="table_name" value="${table_name}"/>
+        <input form="add_form" type="text" name="column_name"/>
+        <input form="add_form" type="submit" value="OK"/>
+    </p>
 </form>
-</p>

@@ -13,8 +13,7 @@ public interface DataBaseManager {
     void dropTable(Connection connection, String tableName) throws RuntimeException;
     void clearTable(Connection connection, String tableName) throws RuntimeException;
     List<List<Object>> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException;
-    int insertRecord (Connection connection, String tableName, String[] columns, String[] values) throws RuntimeException;
+    void insertRecord (Connection connection, String tableName, String[] columns, String[] values) throws RuntimeException;
+    void deleteRecord (Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues);
     int updateRecord (Connection connection, String tableName, String criteriaColumn, String criteriaValue, String setColumn, String setValue);
-
-    int deleteRecord (Connection connection, String tableName, String criteriaColumn, String criteriaValue);
 }

@@ -47,6 +47,8 @@ public class ServiceImpl implements Service {
                     req.setAttribute("table_data", db.getTableData(connection, tableName, ""));
                     req.setAttribute("command_add_column", Command.ADD_COLUMN.getMenuItem());
                     req.setAttribute("command_del_column", Command.DEL_COLUMN.getMenuItem());
+                    req.setAttribute("command_insert", Command.INSERT.getMenuItem());
+                    req.setAttribute("command_del_record", Command.DEL_RECORD.getMenuItem());
                     break;
                 case DROP_TABLE:
                     tableName = req.getParameter("table_name");
@@ -79,6 +81,8 @@ public class ServiceImpl implements Service {
             DataBaseManager db = new PostgresManager();
             String tableName;
             String columnName;
+            String[] columns;
+            String[] values;
             switch (currentMenuItem.getCommand()) {
                 case CONNECT:
                     String databaseName = req.getParameter("dbname");
@@ -94,6 +98,18 @@ public class ServiceImpl implements Service {
                     tableName = req.getParameter("table_name");
                     columnName = req.getParameter("column_name");
                     db.addColumn(connection, tableName, columnName);
+                    return Command.VIEW_TABLE_DATA.getMenuItem();
+                case INSERT:
+                    tableName = req.getParameter("table_name");
+                    columns = req.getParameterValues("insert_columns[]");
+                    values = req.getParameterValues("insert_values[]");
+                    db.insertRecord(connection, tableName, columns, values);
+                    return Command.VIEW_TABLE_DATA.getMenuItem();
+                case DEL_RECORD:
+                    tableName = req.getParameter("table_name");
+                    columns = req.getParameterValues("columns[]");
+                    values = req.getParameterValues("values[]");
+                    db.deleteRecord(connection, tableName, columns, values);
                     return Command.VIEW_TABLE_DATA.getMenuItem();
             }
         } catch (RuntimeException e) {

@@ -147,7 +147,7 @@ public class PostgresManager implements DataBaseManager {
     }
 
     @Override
-    public int insertRecord(Connection connection, String tableName, String[] columns, String[] values) throws RuntimeException {
+    public void insertRecord(Connection connection, String tableName, String[] columns, String[] values) throws RuntimeException {
         StringBuilder columnsQuery = new StringBuilder();
         StringBuilder valuesQuery = new StringBuilder();
         for (int i = 0; i < columns.length; i++) {
@@ -167,7 +167,7 @@ public class PostgresManager implements DataBaseManager {
                 "VALUES (" + valuesQuery + ")\n";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -186,10 +186,23 @@ public class PostgresManager implements DataBaseManager {
     }
 
     @Override
-    public int deleteRecord(Connection connection, String tableName, String criteriaColumn, String criteriaValue) {
-        String sql = String.format("DELETE FROM public.%s WHERE %s = '%s'", tableName, criteriaColumn, criteriaValue);
+    public void deleteRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues) {
+        String sql = String.format("DELETE FROM public.%s WHERE (", tableName);
+        for (int i = 0; i < criteriaColumns.length; i++) {
+            if (!criteriaValues[i].isEmpty()){
+                sql = sql + criteriaColumns[i] + "='" + criteriaValues[i] + "'";
+            } else {
+                sql = sql + "(" + criteriaColumns[i] + "='" + criteriaValues[i] + "' OR " + criteriaColumns[i] + " IS NULL)";
+            }
+            if (i != criteriaColumns.length-1) {
+                sql = sql + " AND ";
+            } else {
+                sql = sql + ")";
+            }
+        }
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
