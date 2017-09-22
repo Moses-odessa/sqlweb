@@ -12,10 +12,10 @@
 </c:forEach>
 </table>
 
-<p align = "center">
 <form action="${command_create.link}" method="post">
+<p align = "center">
     ${command_create.title}:
     <input type="text" name="table_name"/>
     <input type="submit" value="OK"/>
-</form>
 </p>
+</form>

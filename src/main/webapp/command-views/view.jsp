@@ -35,6 +35,7 @@
 </tr>
 </c:forEach>
 
+<c:if test = "${table_columns.size() > 0}">
 <tr>
     <td>
         <form id="ins_form" action="${command_insert.link}" method="post">
@@ -50,6 +51,7 @@
     </c:forEach>
     <td><input form="ins_form" type="submit" value="${command_insert.title}"/></td>
 </tr>
+</c:if>
 
 </table>
 

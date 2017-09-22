@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html>
     <head>
         <title>SQL Web - ${current_page.title}</title>
@@ -22,5 +23,6 @@
             <jsp:include page = "command-views/${current_page.link}.jsp" flush="true" />
         </td>
     </tr>
+</table>
 </body>
 </html>
