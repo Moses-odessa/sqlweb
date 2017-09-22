@@ -3,12 +3,12 @@ package ua.moses.sqlweb.service;
 public class MenuItem {
     private String title;
     private String link;
-    private MainMenu menuEnum;
+    private Command command;
 
-    public MenuItem(String title, String link, MainMenu mainMenu) {
+    public MenuItem(String title, String link, Command command) {
         this.title = title;
         this.link = link;
-        this.menuEnum = mainMenu;
+        this.command = command;
     }
 
     public String getTitle() {
@@ -37,7 +37,7 @@ public class MenuItem {
         return result;
     }
 
-    public MainMenu getMenuEnum() {
-        return menuEnum;
+    public Command getCommand() {
+        return command;
     }
 }

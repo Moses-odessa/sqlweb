@@ -51,44 +51,58 @@ public class PostgresManager implements DataBaseManager {
 
     }
 
-    public boolean createTable(Connection connection, String tableName, String[] columnsName) throws RuntimeException {
-        StringBuilder columnsQuery = new StringBuilder();
-        for (int i = 0; i < columnsName.length; i++) {
-            columnsQuery.append(columnsName[i]).append(" text");
-            if (i < columnsName.length - 1) {
-                columnsQuery.append(",\n");
-            }
-        }
-        String sql = String.format("CREATE TABLE public.%s (%s) TABLESPACE pg_default", tableName, columnsQuery);
+    @Override
+    public void createTable(Connection connection, String tableName) throws RuntimeException {
+        String sql = String.format("CREATE TABLE public.%s () TABLESPACE pg_default", tableName);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return true;
     }
 
+    @Override
+    public void addColumn(Connection connection, String tableName, String columnName) throws RuntimeException {
+        String sql = "ALTER TABLE public." + tableName + " ADD COLUMN " + columnName +  " text";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
-    public boolean dropTable(Connection connection, String tableName) throws RuntimeException {
+    @Override
+    public void delColumn(Connection connection, String tableName, String columnName) {
+        String sql = "ALTER TABLE public." + tableName + " DROP COLUMN " + columnName;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void dropTable(Connection connection, String tableName) throws RuntimeException {
         String sql = "DROP TABLE public." + tableName;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return true;
     }
 
-    public int clearTable(Connection connection, String tableName) throws RuntimeException {
+    @Override
+    public void clearTable(Connection connection, String tableName) throws RuntimeException {
         String sql = "DELETE FROM public." + tableName;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public List<Record> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException {
+    @Override
+    public List<List<Object>> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException {
         String sql = "SELECT * FROM public." + tableName;
         if (sortColumn.length() > 0){
             sql+= " ORDER BY " + sortColumn;
@@ -98,16 +112,11 @@ public class PostgresManager implements DataBaseManager {
 
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnsCount = metaData.getColumnCount();
-            Record columns = new MyRecord(columnsCount);
-            for (int i = 0; i < columnsCount; i++) {
-                columns.set(i, metaData.getColumnName(i + 1));
-            }
-            List<Record> result = new LinkedList<>();
-            result.add(columns);
+            List<List<Object>> result = new LinkedList<>();
             while (resultSet.next()) {
-                Record currentRow = new MyRecord(columnsCount);
+                List<Object> currentRow = new ArrayList<>(columnsCount);
                 for (int i = 0; i < columnsCount; i++) {
-                    currentRow.set(i, resultSet.getString(i + 1));
+                    currentRow.add(resultSet.getObject(i + 1));
                 }
                 result.add(currentRow);
             }
@@ -119,6 +128,25 @@ public class PostgresManager implements DataBaseManager {
         }
     }
 
+    @Override
+    public List<String> getTableColumns(Connection connection, String tableName) throws RuntimeException {
+        String sql = "SELECT * FROM public." + tableName;
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnsCount = metaData.getColumnCount();
+            List<String> columns = new ArrayList<>(columnsCount);
+            for (int i = 0; i < columnsCount; i++) {
+                columns.add(metaData.getColumnName(i + 1));
+            }
+            return columns;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
     public int insertRecord(Connection connection, String tableName, String[] columns, String[] values) throws RuntimeException {
         StringBuilder columnsQuery = new StringBuilder();
         StringBuilder valuesQuery = new StringBuilder();
@@ -145,6 +173,7 @@ public class PostgresManager implements DataBaseManager {
         }
     }
 
+    @Override
     public int updateRecord(Connection connection, String tableName, String criteriaColumn, String criteriaValue,
                             String setColumn, String setValue) {
         String sql = String.format("UPDATE public.%s SET %s = '%s' WHERE %s = '%s'",
@@ -156,6 +185,7 @@ public class PostgresManager implements DataBaseManager {
         }
     }
 
+    @Override
     public int deleteRecord(Connection connection, String tableName, String criteriaColumn, String criteriaValue) {
         String sql = String.format("DELETE FROM public.%s WHERE %s = '%s'", tableName, criteriaColumn, criteriaValue);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

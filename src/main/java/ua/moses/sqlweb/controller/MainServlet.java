@@ -1,12 +1,11 @@
 package ua.moses.sqlweb.controller;
 
-import ua.moses.sqlweb.service.MainMenu;
+import ua.moses.sqlweb.service.Command;
 import ua.moses.sqlweb.service.MenuItem;
 import ua.moses.sqlweb.service.Service;
 import ua.moses.sqlweb.service.ServiceImpl;
 
 import java.io.IOException;
-import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,12 +27,12 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = getAction(req);
-        MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
+        MenuItem currentMenuItem = Command.getMenuItemByLink(action);
         if (currentMenuItem == null) {
-            currentMenuItem = MainMenu.HELP.getMenuItem();
+            currentMenuItem = Command.HELP.getMenuItem();
         }
 
-        service.setAttributes(req, currentMenuItem);
+        service.doGet(req, currentMenuItem);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
@@ -41,10 +40,10 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = getAction(req);
-        MenuItem currentMenuItem = MainMenu.getMenuItemByLink(action);
+        MenuItem currentMenuItem = Command.getMenuItemByLink(action);
 
         currentMenuItem = service.doPost(req, currentMenuItem);
-        service.setAttributes(req, currentMenuItem);
+        service.doGet(req, currentMenuItem);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
