@@ -13,8 +13,10 @@ public enum Command {
     VIEW_TABLE_DATA("View table data", "view", false),
     ADD_COLUMN("Add column", "add_column", false),
     DEL_COLUMN("Del column", "del_column", false),
-    INSERT("Insert record", "insert", false),
+    INSERT_RECORD("Insert record", "insert_record", false),
     DEL_RECORD("Delete record", "del_record", false),
+    EDIT_RECORD("Edit record", "edit", false),
+    UPDATE_RECORD("Update record", "update_record", false),
     ERROR("Error page", "error", false);
 
     private MenuItem menuItem;

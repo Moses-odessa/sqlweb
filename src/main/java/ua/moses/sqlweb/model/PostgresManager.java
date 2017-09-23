@@ -26,7 +26,7 @@ public class PostgresManager implements DataBaseManager {
             throw new RuntimeException("Не подключен jdbc драйвер");
         }
         try {
-             return DriverManager.getConnection("jdbc:postgresql://" + SERVER_NAME + ":" + SERVER_PORT + "/"
+            return DriverManager.getConnection("jdbc:postgresql://" + SERVER_NAME + ":" + SERVER_PORT + "/"
                     + database, userName, password);
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
@@ -63,7 +63,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void addColumn(Connection connection, String tableName, String columnName) throws RuntimeException {
-        String sql = "ALTER TABLE public." + tableName + " ADD COLUMN " + columnName +  " text";
+        String sql = "ALTER TABLE public." + tableName + " ADD COLUMN " + columnName + " text";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -104,8 +104,8 @@ public class PostgresManager implements DataBaseManager {
     @Override
     public List<List<Object>> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException {
         String sql = "SELECT * FROM public." + tableName;
-        if (sortColumn.length() > 0){
-            sql+= " ORDER BY " + sortColumn;
+        if (sortColumn.length() > 0) {
+            sql += " ORDER BY " + sortColumn;
         }
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -174,12 +174,12 @@ public class PostgresManager implements DataBaseManager {
     }
 
     @Override
-    public int updateRecord(Connection connection, String tableName, String criteriaColumn, String criteriaValue,
-                            String setColumn, String setValue) {
-        String sql = String.format("UPDATE public.%s SET %s = '%s' WHERE %s = '%s'",
-                tableName, setColumn, setValue, criteriaColumn, criteriaValue);
+    public void updateRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues,
+                             String[] setColumns, String[] setValues) {
+        String sql = String.format("UPDATE public.%s SET %s WHERE %s",
+                tableName, getSet(setColumns, setValues), getWhere(criteriaColumns, criteriaValues));
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -187,24 +187,40 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void deleteRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues) {
-        String sql = String.format("DELETE FROM public.%s WHERE (", tableName);
-        for (int i = 0; i < criteriaColumns.length; i++) {
-            if (!criteriaValues[i].isEmpty()){
-                sql = sql + criteriaColumns[i] + "='" + criteriaValues[i] + "'";
-            } else {
-                sql = sql + "(" + criteriaColumns[i] + "='" + criteriaValues[i] + "' OR " + criteriaColumns[i] + " IS NULL)";
-            }
-            if (i != criteriaColumns.length-1) {
-                sql = sql + " AND ";
-            } else {
-                sql = sql + ")";
-            }
-        }
+        String sql = String.format("DELETE FROM public.%s WHERE %s", tableName, getWhere(criteriaColumns, criteriaValues));
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private String getWhere(String[] criteriaColumns, String[] criteriaValues) {
+        StringBuilder sql = new StringBuilder("(");
+        for (int i = 0; i < criteriaColumns.length; i++) {
+            if (!criteriaValues[i].isEmpty()) {
+                sql.append(criteriaColumns[i]).append("='").append(criteriaValues[i]).append("'");
+            } else {
+                sql.append("(").append(criteriaColumns[i]).append("='").append(criteriaValues[i]).append("' OR ").append(criteriaColumns[i]).append(" IS NULL)");
+            }
+            if (i != criteriaColumns.length - 1) {
+                sql.append(" AND ");
+            } else {
+                sql.append(")");
+            }
+        }
+        return sql.toString();
+    }
+
+    private String getSet(String[] criteriaColumns, String[] criteriaValues) {
+        StringBuilder sql = new StringBuilder("");
+        for (int i = 0; i < criteriaColumns.length; i++) {
+            sql.append(criteriaColumns[i]).append(" = '").append(criteriaValues[i]).append("'");
+            if (i != criteriaColumns.length - 1) {
+                sql.append(", ");
+            }
+        }
+        return sql.toString();
     }
 }

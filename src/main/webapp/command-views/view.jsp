@@ -17,7 +17,7 @@
 <tr>
     <td  align = "center">
         ${rowNumber.index + 1}
-        <form id="del_form_${rowNumber.index}" action="${command_del_record.link}" method="post">
+        <form id="del_form_${rowNumber.index}" method="post">
             <input form="del_form_${rowNumber.index}" type="hidden" value="${table_name}" name="table_name">
         </form>
     </td>
@@ -30,7 +30,10 @@
         </td>
     </c:forEach>
     <td>
-        <input form="del_form_${rowNumber.index}" type="submit" value="${command_del_record.title}"/>
+        <input form="del_form_${rowNumber.index}" type="submit" formaction="${command_del_record.link}" value="${command_del_record.title}"/>
+    </td>
+    <td>
+        <input form="del_form_${rowNumber.index}" type="submit" formaction="${command_edit.link}" value="${command_edit.title}"/>
     </td>
 </tr>
 </c:forEach>

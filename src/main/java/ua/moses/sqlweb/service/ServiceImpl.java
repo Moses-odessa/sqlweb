@@ -47,8 +47,9 @@ public class ServiceImpl implements Service {
                     req.setAttribute("table_data", db.getTableData(connection, tableName, ""));
                     req.setAttribute("command_add_column", Command.ADD_COLUMN.getMenuItem());
                     req.setAttribute("command_del_column", Command.DEL_COLUMN.getMenuItem());
-                    req.setAttribute("command_insert", Command.INSERT.getMenuItem());
+                    req.setAttribute("command_insert", Command.INSERT_RECORD.getMenuItem());
                     req.setAttribute("command_del_record", Command.DEL_RECORD.getMenuItem());
+                    req.setAttribute("command_edit", Command.EDIT_RECORD.getMenuItem());
                     break;
                 case DROP_TABLE:
                     tableName = req.getParameter("table_name");
@@ -99,7 +100,7 @@ public class ServiceImpl implements Service {
                     columnName = req.getParameter("column_name");
                     db.addColumn(connection, tableName, columnName);
                     return Command.VIEW_TABLE_DATA.getMenuItem();
-                case INSERT:
+                case INSERT_RECORD:
                     tableName = req.getParameter("table_name");
                     columns = req.getParameterValues("insert_columns[]");
                     values = req.getParameterValues("insert_values[]");
@@ -111,6 +112,24 @@ public class ServiceImpl implements Service {
                     values = req.getParameterValues("values[]");
                     db.deleteRecord(connection, tableName, columns, values);
                     return Command.VIEW_TABLE_DATA.getMenuItem();
+                case EDIT_RECORD:
+                    tableName = req.getParameter("table_name");
+                    columns = req.getParameterValues("columns[]");
+                    values = req.getParameterValues("values[]");
+                    req.setAttribute("table_name", tableName);
+                    req.setAttribute("table_columns", columns);
+                    req.setAttribute("values", values);
+                    req.setAttribute("command_update", Command.UPDATE_RECORD.getMenuItem());
+                    break;
+                case UPDATE_RECORD:
+                    tableName = req.getParameter("table_name");
+                    columns = req.getParameterValues("columns[]");
+                    String[] oldValues = req.getParameterValues("old_values[]");
+                    String[] newValues = req.getParameterValues("new_values[]");
+                    db.updateRecord(connection, tableName, columns, oldValues, columns, newValues);
+                    req.setAttribute("table_name", tableName);
+                    return Command.VIEW_TABLE_DATA.getMenuItem();
+
             }
         } catch (RuntimeException e) {
             req.setAttribute("error_text", e.getMessage());
