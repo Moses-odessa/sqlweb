@@ -6,11 +6,11 @@
     <td>#</td>
     <c:forEach items="${table_columns}" var="column">
         <td align = "center">
+            <a href="${command_view.link}?table_name=${table_name}&column_name=${column}">Sort</a><br>
             <b>${column}</b><br>
             <a href="${command_del_column.link}?table_name=${table_name}&column_name=${column}">${command_del_column.title}</a>
         </td>
     </c:forEach>
-    <td></td>
 </tr>
 
 <c:forEach items="${table_data}" var="row" varStatus="rowNumber">

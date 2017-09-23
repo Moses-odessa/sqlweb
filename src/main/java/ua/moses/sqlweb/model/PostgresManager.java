@@ -104,7 +104,7 @@ public class PostgresManager implements DataBaseManager {
     @Override
     public List<List<Object>> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException {
         String sql = "SELECT * FROM public." + tableName;
-        if (sortColumn.length() > 0) {
+        if (sortColumn != null && sortColumn.length()>0) {
             sql += " ORDER BY " + sortColumn;
         }
         try (Statement statement = connection.createStatement();

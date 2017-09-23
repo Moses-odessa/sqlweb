@@ -42,14 +42,16 @@ public class ServiceImpl implements Service {
                     break;
                 case VIEW_TABLE_DATA:
                     tableName = req.getParameter("table_name");
+                    columnName = req.getParameter("column_name");
                     req.setAttribute("table_name", tableName);
                     req.setAttribute("table_columns", db.getTableColumns(connection, tableName));
-                    req.setAttribute("table_data", db.getTableData(connection, tableName, ""));
+                    req.setAttribute("table_data", db.getTableData(connection, tableName, columnName));
                     req.setAttribute("command_add_column", Command.ADD_COLUMN.getMenuItem());
                     req.setAttribute("command_del_column", Command.DEL_COLUMN.getMenuItem());
                     req.setAttribute("command_insert", Command.INSERT_RECORD.getMenuItem());
                     req.setAttribute("command_del_record", Command.DEL_RECORD.getMenuItem());
                     req.setAttribute("command_edit", Command.EDIT_RECORD.getMenuItem());
+                    req.setAttribute("command_view", Command.VIEW_TABLE_DATA.getMenuItem());
                     break;
                 case DROP_TABLE:
                     tableName = req.getParameter("table_name");
