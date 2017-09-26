@@ -1,5 +1,6 @@
 package ua.moses.sqlweb.service;
 
+import org.springframework.stereotype.Component;
 import ua.moses.sqlweb.model.DataBaseManager;
 import ua.moses.sqlweb.model.PostgresManager;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Component
 public class ServiceImpl implements Service {
 
     @Override

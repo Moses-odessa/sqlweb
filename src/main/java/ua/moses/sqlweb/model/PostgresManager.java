@@ -116,7 +116,7 @@ public class PostgresManager implements DataBaseManager {
             while (resultSet.next()) {
                 List<Object> currentRow = new ArrayList<>(columnsCount);
                 for (int i = 0; i < columnsCount; i++) {
-                    currentRow.add(resultSet.getObject(i + 1));
+                    currentRow.add(resultSet.getObject(i + 1)); //http://www.javaportal.ru/java/tutorial/tutorialJDBC/mapping.html приведение типов данных
                 }
                 result.add(currentRow);
             }
