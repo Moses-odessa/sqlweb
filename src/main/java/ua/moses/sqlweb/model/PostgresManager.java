@@ -1,11 +1,14 @@
 package ua.moses.sqlweb.model;
 
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
+@Component
 public class PostgresManager implements DataBaseManager {
 
     public Connection connect(String database, String userName, String password) throws RuntimeException {

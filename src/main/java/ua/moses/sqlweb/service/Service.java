@@ -5,8 +5,7 @@ import java.sql.Connection;
 
 public interface Service {
     Connection connect(String databaseName, String userName, String password);
-
-    void doGet(HttpServletRequest req, MenuItem currentMenuItem);
-
-    MenuItem doPost(HttpServletRequest req, MenuItem currentMenuItem);
+    void setMenuData(HttpServletRequest req);
+    void setContentData(HttpServletRequest req);
+    void doPost(HttpServletRequest req);
 }

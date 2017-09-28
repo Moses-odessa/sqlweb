@@ -5,7 +5,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ua.moses.sqlweb.service.Command;
 import ua.moses.sqlweb.service.MenuItem;
 import ua.moses.sqlweb.service.Service;
-import ua.moses.sqlweb.service.ServiceImpl;
 
 import java.io.IOException;
 
@@ -30,24 +29,16 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = getAction(req);
-        MenuItem currentMenuItem = Command.getMenuItemByLink(action);
-        if (currentMenuItem == null) {
-            currentMenuItem = Command.HELP.getMenuItem();
-        }
-
-        service.doGet(req, currentMenuItem);
+        service.setMenuData(req);
+        service.setContentData(req);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = getAction(req);
-        MenuItem currentMenuItem = Command.getMenuItemByLink(action);
-
-        currentMenuItem = service.doPost(req, currentMenuItem);
-        service.doGet(req, currentMenuItem);
+        service.setMenuData(req);
+        service.doPost(req);
         req.getRequestDispatcher("main.jsp").forward(req, resp);
 
     }
