@@ -11,15 +11,19 @@ import java.util.*;
 @Component
 public class PostgresManager implements DataBaseManager {
 
+    private String SHEMA_NAME;
+
     public Connection connect(String database, String userName, String password) throws RuntimeException {
         Properties properties = new Properties();
         String SERVER_NAME;
         String SERVER_PORT;
+
         try (FileInputStream propertiesFile =
                      new FileInputStream(new File("src/main/resources/postgres.properties"))) {
             properties.load(propertiesFile);
             SERVER_NAME = properties.getProperty("SERVER_NAME");
             SERVER_PORT = properties.getProperty("SERVER_PORT");
+            SHEMA_NAME = properties.getProperty("SHEMA_NAME");
         } catch (IOException e) {
             throw new RuntimeException("Невозможно прочитать файл настроек для подключенияк БД. " + e.getMessage());
         }
@@ -40,7 +44,7 @@ public class PostgresManager implements DataBaseManager {
     public List<String> getTables(Connection connection) throws RuntimeException {
         if (connection == null) throw new RuntimeException("Data Base not connected!!!! Please connect first!!!");
 
-        String sql = "SELECT tablename FROM pg_catalog.pg_tables where schemaname = 'public'";
+        String sql = "SELECT tablename FROM pg_catalog.pg_tables where schemaname = '" + SHEMA_NAME + "'";
         List<String> result = new ArrayList<>();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -56,7 +60,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void createTable(Connection connection, String tableName) throws RuntimeException {
-        String sql = String.format("CREATE TABLE public.%s () TABLESPACE pg_default", tableName);
+        String sql = String.format("CREATE TABLE " + SHEMA_NAME + ".%s () TABLESPACE pg_default", tableName);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -66,7 +70,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void addColumn(Connection connection, String tableName, String columnName) throws RuntimeException {
-        String sql = "ALTER TABLE public." + tableName + " ADD COLUMN " + columnName + " text";
+        String sql = "ALTER TABLE " + SHEMA_NAME + "." + tableName + " ADD COLUMN " + columnName + " text";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -76,7 +80,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void delColumn(Connection connection, String tableName, String columnName) {
-        String sql = "ALTER TABLE public." + tableName + " DROP COLUMN " + columnName;
+        String sql = "ALTER TABLE " + SHEMA_NAME + "." + tableName + " DROP COLUMN " + columnName;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -86,7 +90,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void dropTable(Connection connection, String tableName) throws RuntimeException {
-        String sql = "DROP TABLE public." + tableName;
+        String sql = "DROP TABLE " + SHEMA_NAME + "." + tableName;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -96,7 +100,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void clearTable(Connection connection, String tableName) throws RuntimeException {
-        String sql = "DELETE FROM public." + tableName;
+        String sql = "DELETE FROM " + SHEMA_NAME + "." + tableName;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -106,7 +110,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public List<List<Object>> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException {
-        String sql = "SELECT * FROM public." + tableName;
+        String sql = "SELECT * FROM " + SHEMA_NAME + "." + tableName;
         if (sortColumn != null && sortColumn.length()>0) {
             sql += " ORDER BY " + sortColumn;
         }
@@ -133,7 +137,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public List<String> getTableColumns(Connection connection, String tableName) throws RuntimeException {
-        String sql = "SELECT * FROM public." + tableName;
+        String sql = "SELECT * FROM " + SHEMA_NAME + "." + tableName;
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
 
@@ -165,7 +169,7 @@ public class PostgresManager implements DataBaseManager {
                 valuesQuery.append(", ");
             }
         }
-        String sql = "INSERT INTO public." + tableName + "\n" +
+        String sql = "INSERT INTO " + SHEMA_NAME + "." + tableName + "\n" +
                 "(" + columnsQuery + ")\n" +
                 "VALUES (" + valuesQuery + ")\n";
 
@@ -179,7 +183,7 @@ public class PostgresManager implements DataBaseManager {
     @Override
     public void updateRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues,
                              String[] setColumns, String[] setValues) {
-        String sql = String.format("UPDATE public.%s SET %s WHERE %s",
+        String sql = String.format("UPDATE " + SHEMA_NAME + ".%s SET %s WHERE %s",
                 tableName, getSet(setColumns, setValues), getWhere(criteriaColumns, criteriaValues));
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
@@ -190,7 +194,7 @@ public class PostgresManager implements DataBaseManager {
 
     @Override
     public void delRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues) {
-        String sql = String.format("DELETE FROM public.%s WHERE %s", tableName, getWhere(criteriaColumns, criteriaValues));
+        String sql = String.format("DELETE FROM " + SHEMA_NAME + ".%s WHERE %s", tableName, getWhere(criteriaColumns, criteriaValues));
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
