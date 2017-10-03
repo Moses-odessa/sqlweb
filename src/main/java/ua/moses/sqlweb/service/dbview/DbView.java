@@ -1,31 +1,43 @@
 package ua.moses.sqlweb.service.dbview;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ua.moses.sqlweb.service.dbcommand.DbCommand;
 import ua.moses.sqlweb.service.dbcommand.DbCommandFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
+import java.util.HashMap;
 
 @Component
 public abstract class DbView {
-    String title;
-    String link;
-    int order;
+    private ViewHref viewHref;
+    @Autowired
+    private DbCommandFactory dbCommandFactory;
 
-    public DbView(String title, String link, int order) {
-        this.title = title;
-        this.link = link;
-        this.order = order;
+    public DbView(ViewHref viewHref) {
+        this.viewHref = viewHref;
     }
 
-    public void setVariables(HttpServletRequest req, Connection connection) {
+    public void set(HttpServletRequest req) throws Exception {
         String command = req.getParameter("command");
+        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
         if (command != null && !command.isEmpty()) {
-            new DbCommandFactory().getCommand(command).run(req, connection);
+            DbCommand currentCommand = dbCommandFactory.getCommand(command);
+                currentCommand.run(req, connection);
         }
+        req.setAttribute("current_page", getHref());
     }
 
-    public Href getHref() {
-        return new Href(this.title, this.link);
+    public ViewHref getHref() {
+        return this.viewHref;
+    }
+
+
+    protected void setVariables(HttpServletRequest req, HashMap<String, Object> parameters) {
+        for (String key: parameters.keySet()){
+            req.setAttribute(key, parameters.get(key));
+        }
+
     }
 }

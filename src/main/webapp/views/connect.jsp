@@ -6,23 +6,23 @@
             For reconnect use the form below:
         </p>
 </c:if>
-<form action="connect" method="post">
+<form action="${href_tables.link}?command=${command_connect.link}" method="post">
     <table>
         <tr>
-            <td>Database name</td>
-            <td><input type="text" name="dbname"/></td>
+            <td>${db_name.title}:</td>
+            <td><input type="text" name="${db_name.link}"/></td>
         </tr>
         <tr>
-            <td>User name</td>
-            <td><input type="text" name="username"/></td>
+            <td>${user_name.title}:</td>
+            <td><input type="text" name="${user_name.link}"/></td>
         </tr>
         <tr>
-            <td>Password</td>
-            <td><input type="password" name="password"/></td>
+            <td>${user_password.title}:</td>
+            <td><input type="password" name="${user_password.link}"/></td>
         </tr>
         <tr>
             <td></td>
-            <td><input type="submit" value="connect"/></td>
+            <td><input type="submit" value="${command_connect.title}"/></td>
         </tr>
     </table>
 </form>

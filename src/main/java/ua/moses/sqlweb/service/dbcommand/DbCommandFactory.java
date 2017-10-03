@@ -8,15 +8,21 @@ import java.util.List;
 
 @Component
 public class DbCommandFactory {
-    @Autowired
+
     private List<DbCommand> dbCommandsList;
 
-    public DbCommand getCommand(String commandTile) {
+    @Autowired
+    public void setDbCommandsList(List<DbCommand> dbCommandsList) {
+        this.dbCommandsList = dbCommandsList;
+    }
+
+
+    public DbCommand getCommand(String commandTile) throws Exception {
         for (DbCommand command : dbCommandsList) {
-            if (commandTile.equals(command.getTitle())) {
+            if (commandTile.equals(command.getLink())) {
                 return command;
             }
         }
-        return null;
+        throw new Exception("Unknown Command!!!!");
     }
 }

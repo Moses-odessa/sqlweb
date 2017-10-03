@@ -7,15 +7,20 @@ import java.sql.Connection;
 
 @Component
 public abstract class DbCommand {
-    private String title;
+    private CommandsHref commandsHref;
 
-    DbCommand(String title) {
-        this.title = title;
+    DbCommand(CommandsHref commandsHref) {
+        this.commandsHref = commandsHref;
     }
 
     public abstract void run(HttpServletRequest req , Connection connection);
 
    public String getTitle(){
-       return this.title;
+       return this.commandsHref.getTitle();
    }
+
+
+    public String getLink() {
+        return this.commandsHref.getLink();
+    }
 }

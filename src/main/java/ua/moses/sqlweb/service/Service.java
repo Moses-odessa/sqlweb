@@ -7,5 +7,4 @@ public interface Service {
     Connection connect(String databaseName, String userName, String password);
     void setMenuData(HttpServletRequest req);
     void setContentData(HttpServletRequest req);
-    void doPost(HttpServletRequest req);
 }

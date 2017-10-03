@@ -8,7 +8,7 @@
         <td align = "center">
             <a href="${command_view.link}?table_name=${table_name}&sort_column_name=${column}">Sort</a><br>
             <b>${column}</b><br>
-            <a href="${command_del_column.link}?table_name=${table_name}&column_name=${column}">${command_del_column.title}</a>
+            <a href="${command_view.link}?command=${command_del_column.link}&table_name=${table_name}&column_name=${column}">${command_del_column.title}</a>
         </td>
     </c:forEach>
 </tr>
@@ -30,10 +30,10 @@
         </td>
     </c:forEach>
     <td>
-        <input form="del_form_${rowNumber.index}" type="submit" formaction="${command_del_record.link}" value="${command_del_record.title}"/>
+        <input form="del_form_${rowNumber.index}" type="submit" formaction="${command_view.link}?command=${command_del_record.link}" value="${command_del_record.title}"/>
     </td>
     <td>
-        <input form="del_form_${rowNumber.index}" type="submit" formaction="${command_edit.link}" value="${command_edit.title}"/>
+        <input form="del_form_${rowNumber.index}" type="submit" formaction="${view_edit_record.link}" value="${view_edit_record.title}"/>
     </td>
 </tr>
 </c:forEach>
@@ -41,7 +41,7 @@
 <c:if test = "${table_columns.size() > 0}">
 <tr>
     <td>
-        <form id="ins_form" action="${command_insert.link}" method="post">
+        <form id="ins_form" action="${command_view.link}?command=${command_insert.link}" method="post">
             <input form="ins_form" type="hidden" value="${table_name}" name="table_name">
         </form>
     </td>
@@ -58,7 +58,7 @@
 
 </table>
 
-<form id="add_form" action="${command_add_column.link}" method="post">
+<form id="add_form" action="${command_view.link}?command=${command_add_column.link}" method="post">
     <p align = "center">
         ${command_add_column.title}:
         <input form="add_form" type="hidden" name="table_name" value="${table_name}"/>

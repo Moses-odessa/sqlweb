@@ -8,17 +8,19 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 
 @Component
-public class CreateTable extends DbCommand {
+public class DelRecord extends DbCommand {
     @Autowired
     private DataBaseManager dataBaseManager;
 
-    CreateTable() {
-        super(CommandsHref.CREATE_TABLE);
+    DelRecord() {
+        super(CommandsHref.DEL_RECORD);
     }
 
     @Override
     public void run(HttpServletRequest req, Connection connection) {
         String tableName = req.getParameter("table_name");
-        dataBaseManager.createTable(connection, tableName);
+        String[] columns = req.getParameterValues("columns[]");
+        String[] values = req.getParameterValues("values[]");
+        dataBaseManager.delRecord(connection, tableName, columns, values);
     }
 }

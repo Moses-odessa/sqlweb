@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <h3 align = "center">${table_name}</h3>
-<form action="${command_update.link}" method="post">
+<form action="${view_table_data.link}?command=${command_update.link}" method="post">
 <input type="hidden" value="${table_name}" name="table_name">
 <table>
     <c:forEach items="${values}" var="item" varStatus="status">

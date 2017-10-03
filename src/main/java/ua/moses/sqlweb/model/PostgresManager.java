@@ -189,7 +189,7 @@ public class PostgresManager implements DataBaseManager {
     }
 
     @Override
-    public void deleteRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues) {
+    public void delRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues) {
         String sql = String.format("DELETE FROM public.%s WHERE %s", tableName, getWhere(criteriaColumns, criteriaValues));
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

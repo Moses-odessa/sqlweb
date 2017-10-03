@@ -1,10 +1,16 @@
 package ua.moses.sqlweb.service.dbview;
 
-public class Href {
+public enum ViewParameters {
+    TABLE_NAME("Table name", "table_name"),
+    DB_NAME("Database name", "db_name"),
+    DB_USER("User name", "user_name"),
+    DB_PASSWORD("User password", "user_password");
+
     private String title;
+
     private String link;
 
-    public Href(String title, String link) {
+    ViewParameters(String title, String link) {
         this.title = title;
         this.link = link;
     }

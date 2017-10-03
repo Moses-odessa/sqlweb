@@ -1,0 +1,1 @@
+<p>Error: ${error_text}</p>

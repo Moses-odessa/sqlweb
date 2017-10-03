@@ -14,6 +14,6 @@ public interface DataBaseManager {
     void clearTable(Connection connection, String tableName) throws RuntimeException;
     List<List<Object>> getTableData(Connection connection, String tableName, String sortColumn) throws RuntimeException;
     void insertRecord (Connection connection, String tableName, String[] columns, String[] values) throws RuntimeException;
-    void deleteRecord (Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues);
+    void delRecord(Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues);
     void updateRecord (Connection connection, String tableName, String[] criteriaColumns, String[] criteriaValues, String[] setColumns, String[] setValues);
 }

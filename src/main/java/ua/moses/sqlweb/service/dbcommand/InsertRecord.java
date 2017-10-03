@@ -8,17 +8,19 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 
 @Component
-public class CreateTable extends DbCommand {
+public class InsertRecord extends DbCommand {
     @Autowired
     private DataBaseManager dataBaseManager;
 
-    CreateTable() {
-        super(CommandsHref.CREATE_TABLE);
+    InsertRecord() {
+        super(CommandsHref.INSERT_RECORD);
     }
 
     @Override
     public void run(HttpServletRequest req, Connection connection) {
         String tableName = req.getParameter("table_name");
-        dataBaseManager.createTable(connection, tableName);
+        String[] columns = req.getParameterValues("insert_columns[]");
+        String[] values = req.getParameterValues("insert_values[]");
+        dataBaseManager.insertRecord(connection, tableName, columns, values);
     }
 }

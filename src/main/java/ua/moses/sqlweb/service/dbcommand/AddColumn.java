@@ -8,17 +8,18 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 
 @Component
-public class CreateTable extends DbCommand {
+public class AddColumn extends DbCommand {
     @Autowired
     private DataBaseManager dataBaseManager;
 
-    CreateTable() {
-        super(CommandsHref.CREATE_TABLE);
+    AddColumn() {
+        super(CommandsHref.ADD_COLUMN);
     }
 
     @Override
     public void run(HttpServletRequest req, Connection connection) {
         String tableName = req.getParameter("table_name");
-        dataBaseManager.createTable(connection, tableName);
+        String columnName = req.getParameter("column_name");
+        dataBaseManager.addColumn(connection, tableName, columnName);
     }
 }
