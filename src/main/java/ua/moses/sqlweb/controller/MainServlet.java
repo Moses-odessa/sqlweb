@@ -41,9 +41,4 @@ public class MainServlet extends HttpServlet {
 
     }
 
-    private String getAction(HttpServletRequest req) {
-        String requestURI = req.getRequestURI();
-        return requestURI.substring(req.getContextPath().length() + 1, requestURI.length());
-    }
-
 }
