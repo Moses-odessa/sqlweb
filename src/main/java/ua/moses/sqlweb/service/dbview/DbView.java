@@ -17,17 +17,17 @@ public abstract class DbView {
 
     @PostConstruct
     private void init(){
-        this.dbViews.add(this);
+        try {
+            DbView.getDbView(this.getHref().getLink());
+        } catch (Exception e) {
+            dbViews.add(this);
+        }
     }
 
     public DbView(ViewHref viewHref) {
         this.viewHref = viewHref;
     }
 
-
-    public void setDbViews(List<DbView> dbViews) {
-        this.dbViews = dbViews;
-    }
 
     public void set(HttpServletRequest req) throws Exception {
         String command = req.getParameter("command");

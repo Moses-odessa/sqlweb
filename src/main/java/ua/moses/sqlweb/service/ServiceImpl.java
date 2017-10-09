@@ -16,7 +16,7 @@ public class ServiceImpl implements Service {
     @Autowired
     private List<DbView> dbViews;
     @Autowired
-    private static List<DbCommand> dbCommandsList;
+    private static List<DbCommand> dbCommands;
 
     @Override
     public void setMenuData(HttpServletRequest req) {

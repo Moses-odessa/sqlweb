@@ -35,10 +35,7 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        service.setMenuData(req);
-        service.setContentData(req);
-        req.getRequestDispatcher("main.jsp").forward(req, resp);
-
+        doGet(req, resp);
     }
 
 }
