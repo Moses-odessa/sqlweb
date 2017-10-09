@@ -1,6 +1,5 @@
 package ua.moses.sqlweb.service.dbview;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.moses.sqlweb.service.dbcommand.DbCommand;
 
