@@ -1,14 +1,20 @@
 package ua.moses.sqlweb.service.dbview;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.moses.sqlweb.service.dbcommand.CommandsHref;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.List;
 
 @Component
+
 public class PageConnect extends DbView {
+    @Autowired
+    private List<DbView> dbViews;
+
     public PageConnect() {
         super(ViewHref.CONNECTION);
     }
