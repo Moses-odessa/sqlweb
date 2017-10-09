@@ -20,7 +20,7 @@
             <%@ include file = "menu.jsp" %>
         </td>
         <td align = "center" style="width:90%" bgcolor = "lightgray">
-            <jsp:include page = "views/${current_page.link}.jsp" flush="true" />
+            <jsp:include page = "${current_page.link}.jsp" flush="true" />
         </td>
     </tr>
 </table>

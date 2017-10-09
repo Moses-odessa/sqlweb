@@ -16,7 +16,7 @@ public abstract class DbView {
     private static List<DbView> dbViews = new ArrayList<>();
 
     @PostConstruct
-    private void init(){
+    private void init() {
         try {
             DbView.getDbView(this.getHref().getLink());
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public abstract class DbView {
         Connection connection = (Connection) req.getSession().getAttribute("db_connection");
         if (command != null && !command.isEmpty()) {
             DbCommand currentCommand = DbCommand.getCommand(command);
-                currentCommand.run(req, connection);
+            currentCommand.run(req, connection);
         }
         req.setAttribute("current_page", getHref());
     }
@@ -45,7 +45,7 @@ public abstract class DbView {
 
 
     protected void setVariables(HttpServletRequest req, HashMap<String, Object> parameters) {
-        for (String key: parameters.keySet()){
+        for (String key : parameters.keySet()) {
             req.setAttribute(key, parameters.get(key));
         }
 
@@ -53,7 +53,7 @@ public abstract class DbView {
 
     public static DbView getDbView(String action) throws Exception {
         String viewName = action;
-        if (viewName == null || viewName.isEmpty()){
+        if (viewName == null || viewName.isEmpty()) {
             viewName = ViewHref.DEFAULT.getLink();
         }
         for (DbView dbView : dbViews) {
