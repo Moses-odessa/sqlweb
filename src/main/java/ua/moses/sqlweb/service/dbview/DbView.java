@@ -1,14 +1,17 @@
 package ua.moses.sqlweb.service.dbview;
 
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 import ua.moses.sqlweb.service.dbcommand.DbCommand;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public abstract class DbView {
@@ -29,14 +32,16 @@ public abstract class DbView {
     }
 
 
-    public void set(HttpServletRequest req) throws Exception {
-        String command = req.getParameter("command");
-        Connection connection = (Connection) req.getSession().getAttribute("db_connection");
+    public void set(Model model, HttpSession session) throws Exception {
+        Map<String, Object> parameters = new HashMap<>();
+        model.mergeAttributes(parameters);
+        String command = (String) parameters.get("command");
+        Connection connection = (Connection) session.getAttribute("db_connection");
         if (command != null && !command.isEmpty()) {
             DbCommand currentCommand = DbCommand.getCommand(command);
-            currentCommand.run(req, connection);
+            currentCommand.run(model, connection, session);
         }
-        req.setAttribute("current_page", getHref());
+        model.addAttribute("current_page", getHref());
     }
 
     public ViewHref getHref() {
@@ -44,12 +49,6 @@ public abstract class DbView {
     }
 
 
-    protected void setVariables(HttpServletRequest req, HashMap<String, Object> parameters) {
-        for (String key : parameters.keySet()) {
-            req.setAttribute(key, parameters.get(key));
-        }
-
-    }
 
     public static DbView getDbView(String action) throws Exception {
         String viewName = action;

@@ -3,7 +3,7 @@
 <p align = "center"><h3>${table_name}</h3></p>
 <table border = "1">
 <tr bgcolor = "gray">
-    <td>#</td>
+    <td align = "center">#</td>
     <c:forEach items="${table_columns}" var="column">
         <td align = "center">
             <a href="${command_view.link}?table_name=${table_name}&sort_column_name=${column}">Sort</a><br>
@@ -11,6 +11,7 @@
             <a href="${command_view.link}?command=${command_del_column.link}&table_name=${table_name}&column_name=${column}">${command_del_column.title}</a>
         </td>
     </c:forEach>
+    <td colspan="2" align = "center">Operations</td>
 </tr>
 
 <c:forEach items="${table_data}" var="row" varStatus="rowNumber">
@@ -41,6 +42,7 @@
 <c:if test = "${table_columns.size() > 0}">
 <tr>
     <td>
+    New!!!
         <form id="ins_form" action="${command_view.link}?command=${command_insert.link}" method="post">
             <input form="ins_form" type="hidden" value="${table_name}" name="table_name">
         </form>
@@ -52,7 +54,7 @@
             <input form="ins_form" type="text" value="" name="insert_values[]">
         </td>
     </c:forEach>
-    <td><input form="ins_form" type="submit" value="${command_insert.title}"/></td>
+    <td colspan="2" align = "center"><input form="ins_form" type="submit" value="${command_insert.title}"/></td>
 </tr>
 </c:if>
 

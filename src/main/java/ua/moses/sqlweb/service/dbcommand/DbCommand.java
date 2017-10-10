@@ -1,9 +1,10 @@
 package ua.moses.sqlweb.service.dbcommand;
 
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public abstract class DbCommand {
         throw new Exception("Unknown Command!!!!");
     }
 
-    public abstract void run(HttpServletRequest req, Connection connection);
+    public abstract void run(Model model, Connection connection, HttpSession session);
 
     public String getTitle() {
         return this.commandsHref.getTitle();

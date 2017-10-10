@@ -1,9 +1,10 @@
 package ua.moses.sqlweb.service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
+import org.springframework.ui.Model;
+
+import javax.servlet.http.HttpSession;
 
 public interface Service {
-    void setMenuData(HttpServletRequest req);
-    void setContentData(HttpServletRequest req);
+    void setMenuData(Model model);
+    void setContentData(Model model, String action, HttpSession session);
 }
